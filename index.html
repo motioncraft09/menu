@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>স্বাদের রাজ্য - বাংলা খাবারের মেনু</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: #f8f5f2;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 30px 15px 20px;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #5a2a27;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            color: #5a2a27;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .menu-item {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+        }
+        
+        .item-img {
+            height: 200px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .item-content {
+            padding: 20px;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .item-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #5a2a27;
+        }
+        
+        .item-price {
+            background: #f8f5f2;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+        
+        .item-price:before {
+            content: '৳';
+            font-size: 0.9rem;
+            margin-right: 2px;
+        }
+        
+        .item-desc {
+            color: #7e7e7e;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            height: 60px;
+            overflow: hidden;
+        }
+        
+        .add-btn {
+            display: block;
+            width: 100%;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .add-btn:hover {
+            background: #c0392b;
+        }
+        
+        /* Food Detail Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 20px;
+            overflow: hidden;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(30px);
+            transition: all 0.4s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-img {
+            height: 300px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            color: #5a2a27;
+            font-weight: 700;
+        }
+        
+        .modal-price {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            font-weight: 700;
+        }
+        
+        .modal-price:before {
+            content: '৳';
+            font-size: 1.3rem;
+        }
+        
+        .modal-desc {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+        
+        .bangla-title {
+            font-size: 1.3rem;
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-weight: 700;
+            border-left: 4px solid #e74c3c;
+            padding-left: 12px;
+        }
+        
+        .bangla-desc {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .floating-cart {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background: #e74c3c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.5);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .floating-cart:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: white;
+            color: #e74c3c;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .modal-img {
+                height: 250px;
+            }
+            
+            .modal-body {
+                padding: 20px;
+            }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+            
+            .modal-desc, .bangla-desc {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-img {
+                height: 200px;
+            }
+            
+            .modal-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .modal-price {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>স্বাদের রাজ্য</h1>
+            <p>বাংলাদেশের ঐতিহ্যবাহী খাবারের স্বাদ অনুভব করুন এক ক্লিকেই</p>
+        </div>
+        
+        <!-- Menu Grid -->
+        <div class="menu-grid" id="menuGrid">
+            <!-- Menu items will be populated by JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Food Detail Modal -->
+    <div class="modal" id="foodModal">
+        <div class="modal-content">
+            <div class="close-modal" id="closeModal">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="modal-img" id="modalImg"></div>
+            <div class="modal-body">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                    <div class="modal-price" id="modalPrice"></div>
+                </div>
+                <p class="modal-desc" id="modalDesc"></p>
+                
+                <h3 class="bangla-title">বিস্তারিত বর্ণনা</h3>
+                <p class="bangla-desc" id="banglaDesc"></p>
+                
+                <button class="add-btn" id="modalAddBtn">
+                    <i class="fas fa-plus"></i> অর্ডার করুন
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Cart -->
+    <div class="floating-cart" id="floatingCart">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="cart-count">0</span>
+    </div>
+
+    <script>
+        // Menu data with Bangla descriptions
+        const menuItems = [
+            {
+                id: 1,
+                name: "চিকেন বিরিয়ানি",
+                description: "সুগন্ধি বাসমতী চালের সাথে মসলাদার চিকেন এবং বিশেষ মশলা",
+                price: 350,
+                image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80",
+                banglaDesc: "চিকেন বিরিয়ানি বাংলাদেশের সবচেয়ে জনপ্রিয় খাবারের মধ্যে একটি। এই বিরিয়ানি তৈরি করা হয় সুগন্ধি বাসমতী চাল, টুকরো টুকরো মুরগির মাংস, এবং বিভিন্ন ধরনের মসলা দিয়ে। এটি ধনিয়া পাতা, পুদিনা পাতা, জাফরান, এলাচ, দারুচিনি এবং লবঙ্গের সুগন্ধে ভরপুর। বিরিয়ানি রান্নার বিশেষ পদ্ধতির জন্য এর স্বাদ অতুলনীয়। সাধারণত এটি রায়তা, বোরহানি বা সালাদের সাথে পরিবেশন করা হয়।"
+            },
+            {
+                id: 2,
+                name: "বিফ কালা ভুনা",
+                description: "বিশেষ মসলা দিয়ে আস্তে আস্তে রান্না করা গরুর মাংস",
+                price: 420,
+                image: "https://images.unsplash.com/photo-1603360946369-dc9bbd814103?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1035&q=80",
+                banglaDesc: "বিফ কালা ভুনা চট্টগ্রামের একটি ঐতিহ্যবাহী খাবার। এই পদটি তৈরি করা হয় গরুর মাংসকে ধীরে ধীরে রান্না করে বিশেষ মসলার মিশ্রণে, যাতে মাংস নরম হয় এবং মসলার স্বাদ গভীরভাবে প্রবেশ করে। প্রধান মসলার মধ্যে রয়েছে পিঁয়াজ, রসুন, আদা, শুকনা মরিচ, ধনিয়া গুঁড়ো, জিরা গুঁড়ো এবং গরম মসলা। কালা ভুনার নামকরণ হয়েছে এর গাঢ় বর্ণের কারণে, যা আসে কড়া ভাজা পিঁয়াজ থেকে। এটি সাধারণত ভাত বা রুটির সাথে পরিবেশন করা হয়।"
+            },
+            {
+                id: 3,
+                name: "ইলিশ মাছের ভাপা",
+                description: "সরিষা ও নারকেলের ঝোল দিয়ে রান্না করা বাংলাদেশের জাতীয় মাছ",
+                price: 550,
+                image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1921&q=80",
+                banglaDesc: "ইলিশ মাছ বাংলাদেশের জাতীয় মাছ এবং ইলিশের ভাপা একটি জনপ্রিয় খাবার। এই পদটি তৈরি করা হয় সরিষা বাটা, সবুজ মরিচ, নারকেলের দুধ এবং বিভিন্ন মসলা দিয়ে। মাছটিকে প্রথমে ভাপে সিদ্ধ করা হয় যাতে এর কোমলতা বজায় থাকে। ইলিশ ভাপার স্বাদ টক-ঝাল-মিষ্টির এক অপূর্ব সমন্বয়। এটি সাধারণত গরম ভাতের সাথে পরিবেশন করা হয়। বর্ষাকালে যখন ইলিশ মাছের প্রাচুর্য থাকে, তখন এই খাবারটি বিশেষভাবে জনপ্রিয়।"
+            },
+            {
+                id: 4,
+                name: "মোরগ পোলাও",
+                description: "মুরগির মাংস দিয়ে তৈরি সুগন্ধি পোলাও",
+                price: 320,
+                image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1921&q=80",
+                banglaDesc: "মোরগ পোলাও বাংলাদেশের একটি ঐতিহ্যবাহিক রাজকীয় খাবার। এটি তৈরি করা হয় সুগন্ধি বাসমতী চাল দিয়ে যার সাথে যোগ করা হয় টুকরো টুকরো মুরগির মাংস, কিসমিস, বাদাম, এবং বিভিন্ন ধরনের মসলা। পোলাও রান্নার সময় ব্যবহার করা হয় জাফরান বা জর্দা রং যা এটিকে একটি আকর্ষণীয় সোনালী রং দেয়। মোরগ পোলাও সাধারণত বিশেষ অনুষ্ঠান যেমন ঈদ, বিবাহ বা অন্যান্য উৎসবে পরিবেশন করা হয়। এটি রায়তা বা সালাদের সাথে পরিবেশন করা হয়।"
+            },
+            {
+                id: 5,
+                name: "বেগুনী",
+                description: "বেসনে মাখানো ও গভীর তেলে ভাজা বেগুন",
+                price: 180,
+                image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1921&q=80",
+                banglaDesc: "বেগুনী বাংলাদেশের একটি জনপ্রিয় ভাজা খাবার যা তৈরি করা হয় বেগুনকে বেসনের প্রলেপ দিয়ে গভীর তেলে ভেজে। বেগুনকে প্রথমে পাতলা করে কাটা হয়, তারপর এটি বেসন, হলুদ গুঁড়ো, মরিচ গুঁড়ো এবং লবণের মিশ্রণে ডুবিয়ে ভাজা হয়। বেগুনীর বাহিরটা কুড়কুড়ে হয় আর ভিতরে থাকে নরম বেগুন। এটি সাধারণত খিচুড়ি, পোলাও বা শুধু চায়ের সাথে নাস্তা হিসেবে খাওয়া হয়। রাস্তার পাশের দোকান থেকে শুরু করে রেস্টুরেন্ট সবখানেই এই খাবারটি পাওয়া যায়।"
+            },
+            {
+                id: 6,
+                name: "রসমালাই",
+                description: "মিষ্টি দইয়ে ভেজানো নরম ছানার বল",
+                price: 120,
+                image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1921&q=80",
+                banglaDesc: "রসমালাই বাংলাদেশ এবং পশ্চিমবঙ্গের একটি জনপ্রিয় মিষ্টান্ন। এটি তৈরি করা হয় ছানার ছোট ছোট বলকে মিষ্টি গরম দুধে ভিজিয়ে। রসমালাই দুটি অংশে তৈরি করা হয়: প্রথমে ছানা থেকে তৈরি বল এবং দ্বিতীয়ত রস (মিষ্টি দুধ)। ছানার বলগুলো হালকা সিদ্ধ করে তারপর ঠান্ডা জলে ডুবানো হয়। পরে এগুলোকে গরম মিষ্টি দুধে ডুবিয়ে রাখা হয়। রসমালাই সাধারণত ঠান্ডা পরিবেশন করা হয় এবং এর উপরে কখনো কখনো পিষ্ট বাদাম বা ছোট এলাচ দানা ছিটিয়ে দেওয়া হয়।"
+            }
+        ];
+
+        // DOM Elements
+        const menuGrid = document.getElementById('menuGrid');
+        const foodModal = document.getElementById('foodModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalImg = document.getElementById('modalImg');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalPrice = document.getElementById('modalPrice');
+        const modalDesc = document.getElementById('modalDesc');
+        const banglaDesc = document.getElementById('banglaDesc');
+        const modalAddBtn = document.getElementById('modalAddBtn');
+        const floatingCart = document.getElementById('floatingCart');
+        const cartCount = document.querySelector('.cart-count');
+        
+        // State
+        let cart = [];
+        let currentItem = null;
+
+        // Initialize the menu
+        function initMenu() {
+            menuGrid.innerHTML = '';
+            menuItems.forEach(item => {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item';
+                menuItem.innerHTML = `
+                    <div class="item-img" style="background-image: url('${item.image}')"></div>
+                    <div class="item-content">
+                        <div class="item-header">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">${item.price}</div>
+                        </div>
+                        <p class="item-desc">${item.description}</p>
+                        <button class="add-btn" data-id="${item.id}">
+                            <i class="fas fa-plus"></i> অর্ডার করুন
+                        </button>
+                    </div>
+                `;
+                menuGrid.appendChild(menuItem);
+                
+                // Add click event to show details
+                menuItem.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('add-btn')) {
+                        showFoodDetails(item);
+                    }
+                });
+                
+                // Add event to order button
+                menuItem.querySelector('.add-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    addToCart(item);
+                });
+            });
+        }
+
+        // Show food details in modal
+        function showFoodDetails(item) {
+            currentItem = item;
+            modalImg.style.backgroundImage = `url('${item.image}')`;
+            modalTitle.textContent = item.name;
+            modalPrice.textContent = item.price;
+            modalDesc.textContent = item.description;
+            banglaDesc.textContent = item.banglaDesc;
+            foodModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Add item to cart
+        function addToCart(item) {
+            cart.push(item);
+            updateCartCount();
+            
+            // Show notification effect
+            cartCount.style.transform = 'scale(1.5)';
+            setTimeout(() => {
+                cartCount.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            cartCount.textContent = cart.length;
+        }
+
+        // Close modal
+        function closeModalFunc() {
+            foodModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initMenu();
+            
+            // Event listeners
+            closeModal.addEventListener('click', closeModalFunc);
+            
+            // Close modal when clicking outside content
+            foodModal.addEventListener('click', (e) => {
+                if (e.target === foodModal) {
+                    closeModalFunc();
+                }
+            });
+            
+            // Add to cart from modal
+            modalAddBtn.addEventListener('click', () => {
+                if (currentItem) {
+                    addToCart(currentItem);
+                    closeModalFunc();
+                }
+            });
+            
+            // Floating cart click
+            floatingCart.addEventListener('click', () => {
+                if (cart.length > 0) {
+                    alert(`আপনার অর্ডার প্রস্তুত!\nমোট আইটেম: ${cart.length}\nমোট মূল্য: ৳${cart.reduce((sum, item) => sum + item.price, 0)}`);
+                    cart = [];
+                    updateCartCount();
+                } else {
+                    alert('আপনার কার্টে কোনো আইটেম নেই');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
